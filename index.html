@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Currículos para Qwen 7B</title>
+</head>
+
+<body>
+    <h1>Recrutador com IA</h1>
+
+    <p>
+        <strong>1. Informe o Link do Ngrok gerado no Colab:</strong><br>
+        <input type="text" id="linkApi" value="https://lillianna-unhogged-nelida.ngrok-free.dev/parse_curriculo/"
+            style="width: 400px;">
+    </p>
+
+    <p>
+        <strong>2. Selecione os Currículos (PDF - Máx 20 arquivos):</strong><br>
+        <input type="file" id="arquivoPdf" accept="application/pdf" multiple>
+    </p>
+
+    <p>
+        <button onclick="enviarCurriculo()">Enviar para o Colab</button>
+    </p>
+
+    <hr>
+
+    <h3>Status / Resultado JSON:</h3>
+    <p id="status_mensagem" style="color: blue;">Aguardando envio...</p>
+    <button id="btnBaixar"
+        style="display: none; margin-bottom: 15px; padding: 8px 16px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 4px;"
+        onclick="baixarJson()"> Baixar JSON</button>
+
+    <pre id="caixaResultado"
+        style="background: #f4f4f4; padding: 10px; border: 1px solid #ccc; max-width: 800px; overflow: auto; min-height: 200px;">
+    Nenhum JSON recebido ainda.
+    </pre>
+
+    <script>
+        async function enviarCurriculo() {
+            const inputLink = document.getElementById("linkApi").value;
+            const inputFile = document.getElementById("arquivoPdf");
+            const status_mensagem = document.getElementById("status_mensagem");
+            const caixaResultado = document.getElementById("caixaResultado");
+
+            if (!inputLink.trim()) {
+                alert("Por favor, cole o link do Ngrok (servidor) antes de processar.");
+                return;
+            }
+            
+            if (!inputFile.files || inputFile.files.length === 0) {
+                alert("Selecione ao menos um arquivo PDF para envio.");
+                return;
+            }
+            
+            if (inputFile.files.length > 20) {
+                alert("Para manter a estabilidade da API, selecione no máximo 20 arquivos por vez.");
+                return;
+            }
+
+            document.getElementById("btnBaixar").style.display = "none";
+            
+            const totalArquivos = inputFile.files.length;
+            const jsonsExtraidos = [];
+
+            caixaResultado.innerText = "Iniciando processamento em lote...\n";
+
+            for (let i = 0; i < totalArquivos; i++) {
+                const arquivoAtual = inputFile.files[i];
+                
+                status_mensagem.innerText = `Processando currículo ${i + 1} de ${totalArquivos} (${arquivoAtual.name})...`;
+                status_mensagem.style.color = "orange";
+
+                const formData = new FormData();
+                formData.append("arquivo", arquivoAtual);
+
+                try {
+                    const resposta = await fetch(inputLink, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (resposta.ok) {
+                        const jsonPronto = await resposta.json();
+                        jsonsExtraidos.push(jsonPronto);
+                        
+                        caixaResultado.innerText += `\n[OK] ${arquivoAtual.name} extraído com sucesso.`;
+                        caixaResultado.scrollTop = caixaResultado.scrollHeight;
+                        
+                    } else {
+                        status_mensagem.innerText = `Erro ao extrair o arquivo ${arquivoAtual.name}. Pulando...`;
+                        status_mensagem.style.color = "red";
+                        caixaResultado.innerText += `\n[ERRO] Falha na API (${resposta.status}) no currículo: ${arquivoAtual.name}`;
+                    }
+
+                } catch (erro) {
+                    status_mensagem.innerText = "Falha de comunicação com o servidor.";
+                    status_mensagem.style.color = "red";
+                    caixaResultado.innerText += `\n[ERRO] Timeout ou falha de rede ao processar: ${arquivoAtual.name}`;
+                    console.error("Erro na requisição:", erro);
+                }
+            }
+
+            status_mensagem.innerText = `Lote finalizado. Total de currículos processados: ${jsonsExtraidos.length}.`;
+            status_mensagem.style.color = "green";
+            
+            caixaResultado.innerText = JSON.stringify(jsonsExtraidos, null, 2);
+            window.ultimoJson = jsonsExtraidos;
+            document.getElementById("btnBaixar").style.display = "inline-block";
+        }
+
+        function baixarJson() {
+            if (!window.ultimoJson) return;
+
+            const jsonString = JSON.stringify(window.ultimoJson, null, 2);
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "curriculos_extraidos.json";
+            document.body.appendChild(a);
+            a.click();
+            
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+
+</html>
