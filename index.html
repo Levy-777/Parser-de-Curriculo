@@ -1,133 +1,2331 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload de Currículos para Qwen 7B</title>
+    <meta name="description" content="Sistema de recrutamento inteligente — cadastre vagas e importe currículos para análise com IA">
+    <title>Recrutador IA — Vaga & Currículos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===================== RESET & VARIABLES ===================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-input: rgba(255, 255, 255, 0.04);
+            --bg-input-focus: rgba(255, 255, 255, 0.07);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-focus: rgba(99, 102, 241, 0.5);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-indigo: #6366f1;
+            --accent-indigo-light: #818cf8;
+            --accent-violet: #8b5cf6;
+            --accent-emerald: #10b981;
+            --accent-emerald-light: #34d399;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --tag-bg-obrig: rgba(99, 102, 241, 0.15);
+            --tag-border-obrig: rgba(99, 102, 241, 0.4);
+            --tag-bg-desej: rgba(139, 92, 246, 0.15);
+            --tag-border-desej: rgba(139, 92, 246, 0.4);
+            --shadow-glow: 0 0 60px rgba(99, 102, 241, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===================== BASE ===================== */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 60%);
+            animation: bgShift 20s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes bgShift {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            50%  { transform: translate(-2%, -1%) rotate(1deg); }
+            100% { transform: translate(1%, 2%) rotate(-1deg); }
+        }
+
+        /* ===================== LAYOUT ===================== */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        /* ===================== HEADER ===================== */
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--accent-indigo-light);
+            margin-bottom: 20px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header__badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-emerald);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .header__title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-indigo-light) 50%, var(--accent-violet) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            animation: fadeInDown 0.6s ease 0.1s both;
+        }
+
+        .header__subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            animation: fadeInDown 0.6s ease 0.2s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===================== STEPPER ===================== */
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease 0.25s both;
+        }
+
+        .stepper__step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .stepper__step:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stepper__number {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 2px solid var(--border-subtle);
+            color: var(--text-muted);
+            background: var(--bg-input);
+            transition: all var(--transition-normal);
+            flex-shrink: 0;
+        }
+
+        .stepper__label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color var(--transition-normal);
+            white-space: nowrap;
+        }
+
+        .stepper__step.active .stepper__number {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .stepper__step.active .stepper__label {
+            color: var(--text-primary);
+        }
+
+        .stepper__step.completed .stepper__number {
+            background: var(--accent-emerald);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .stepper__step.completed .stepper__label {
+            color: var(--accent-emerald-light);
+        }
+
+        .stepper__connector {
+            width: 60px;
+            height: 2px;
+            background: var(--border-subtle);
+            border-radius: 99px;
+            transition: background var(--transition-normal);
+            flex-shrink: 0;
+        }
+
+        .stepper__connector.active {
+            background: linear-gradient(90deg, var(--accent-emerald), var(--accent-indigo));
+        }
+
+        /* ===================== CARD ===================== */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            box-shadow: var(--shadow-glow);
+            animation: fadeInUp 0.7s ease 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===================== STEP PANELS ===================== */
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        /* ===================== FORM GROUPS ===================== */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .form-group label .required {
+            color: var(--accent-rose);
+            margin-left: 2px;
+        }
+
+        .form-group .hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* ===================== INPUTS ===================== */
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all var(--transition-fast);
+            outline: none;
+        }
+
+        input[type="text"]:hover,
+        textarea:hover,
+        select:hover {
+            background: var(--bg-input-focus);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            background: var(--bg-input-focus);
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 5.646a.5.5 0 0 1 .708 0L8 8.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        /* ===================== TAG INPUT ===================== */
+        .tag-input-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            min-height: 52px;
+            align-items: center;
+            cursor: text;
+            transition: all var(--transition-fast);
+        }
+
+        .tag-input-wrapper:hover {
+            background: var(--bg-input-focus);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .tag-input-wrapper:focus-within {
+            background: var(--bg-input-focus);
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .tag-input-wrapper input {
+            flex: 1;
+            min-width: 150px;
+            padding: 4px 2px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .tag-input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            animation: tagIn 0.2s ease;
+            white-space: nowrap;
+        }
+
+        @keyframes tagIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .tag--obrig {
+            background: var(--tag-bg-obrig);
+            border: 1px solid var(--tag-border-obrig);
+            color: var(--accent-indigo-light);
+        }
+
+        .tag--desej {
+            background: var(--tag-bg-desej);
+            border: 1px solid var(--tag-border-desej);
+            color: #c4b5fd;
+        }
+
+        .tag__remove {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: inherit;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            line-height: 1;
+        }
+
+        .tag__remove:hover {
+            background: rgba(244, 63, 94, 0.4);
+            color: #fff;
+        }
+
+        /* ===================== DIVIDER ===================== */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+            margin: 32px 0;
+        }
+
+        /* ===================== SECTION TITLE ===================== */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            letter-spacing: 0.02em;
+        }
+
+        .section-title__icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+        }
+
+        .section-title__icon--skills {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+        }
+
+        .section-title__icon--info {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(52, 211, 153, 0.2));
+        }
+
+        .section-title__icon--upload {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2));
+        }
+
+        .section-title__icon--api {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
+        }
+
+        /* ===================== BUTTONS ===================== */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 36px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn--primary:active {
+            transform: translateY(0);
+        }
+
+        .btn--secondary {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .btn--secondary:hover {
+            background: var(--bg-input-focus);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+        }
+
+        .btn--success {
+            background: linear-gradient(135deg, var(--accent-emerald), #059669);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn--success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn--success:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Ripple effect */
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .btn:active::after {
+            opacity: 1;
+        }
+
+        /* ===================== FILE UPLOAD ZONE ===================== */
+        .file-upload-zone {
+            position: relative;
+            border: 2px dashed var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 40px 24px;
+            text-align: center;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            background: var(--bg-input);
+        }
+
+        .file-upload-zone:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: var(--bg-input-focus);
+        }
+
+        .file-upload-zone.dragover {
+            border-color: var(--accent-indigo);
+            background: rgba(99, 102, 241, 0.08);
+            transform: scale(1.01);
+        }
+
+        .file-upload-zone__icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .file-upload-zone__title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .file-upload-zone__hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .file-upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* ===================== FILE LIST ===================== */
+        .file-list {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            animation: tagIn 0.2s ease;
+        }
+
+        .file-item__icon {
+            color: var(--accent-rose);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .file-item__name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-item__size {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .file-item__remove {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px;
+            font-size: 1rem;
+            transition: color var(--transition-fast);
+        }
+
+        .file-item__remove:hover {
+            color: var(--accent-rose);
+        }
+
+        /* ===================== PROGRESS ===================== */
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-container.visible {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-indigo), var(--accent-violet));
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-status {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .progress-status__spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--border-subtle);
+            border-top-color: var(--accent-indigo);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===================== OUTPUT SECTION ===================== */
+        .output-section {
+            margin-top: 32px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .output-header__title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-header__actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .output-header__copy,
+        .output-header__download {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .output-header__copy:hover,
+        .output-header__download:hover {
+            background: var(--bg-input-focus);
+            color: var(--text-primary);
+        }
+
+        .output-header__copy--copied {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: rgba(16, 185, 129, 0.3) !important;
+            color: var(--accent-emerald-light) !important;
+        }
+
+        .output-header__download {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.25);
+            color: var(--accent-emerald-light);
+        }
+
+        .output-header__download:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .output-code {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.82rem;
+            line-height: 1.8;
+            color: var(--accent-emerald-light);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 500px;
+        }
+
+        /* ===================== SUCCESS BANNER ===================== */
+        .success-banner {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: var(--radius-md);
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--accent-emerald-light);
+            font-weight: 500;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .success-banner.visible {
+            display: flex;
+        }
+
+        /* ===================== LOG LIST ===================== */
+        .log-list {
+            margin-top: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .log-item {
+            font-size: 0.78rem;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            animation: tagIn 0.15s ease;
+        }
+
+        .log-item--ok {
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--accent-emerald-light);
+        }
+
+        .log-item--error {
+            background: rgba(244, 63, 94, 0.08);
+            color: var(--accent-rose);
+        }
+
+        .log-item--info {
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--accent-indigo-light);
+        }
+
+        /* ===================== VALIDATION ===================== */
+        .form-group.error input,
+        .form-group.error textarea,
+        .form-group.error select,
+        .form-group.error .tag-input-wrapper {
+            border-color: var(--accent-rose) !important;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.1) !important;
+        }
+
+        .error-msg {
+            display: none;
+            font-size: 0.75rem;
+            color: var(--accent-rose);
+            margin-top: 6px;
+            animation: shake 0.3s ease;
+        }
+
+        .form-group.error .error-msg {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        /* ===================== NAV BUTTONS ===================== */
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 36px;
+        }
+
+        /* ===================== RESULT CARDS — STEP 3 ===================== */
+        .result-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .result-summary__card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .result-summary__value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-indigo-light), var(--accent-violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-summary__label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .ranking-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.4s ease both;
+        }
+
+        .ranking-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: var(--bg-input-focus);
+            transform: translateY(-2px);
+        }
+
+        .ranking-card__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .ranking-card__position {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ranking-card__badge {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .ranking-card__badge--1 {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .ranking-card__badge--2 {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+        }
+
+        .ranking-card__badge--3 {
+            background: linear-gradient(135deg, #cd7f32, #a0522d);
+        }
+
+        .ranking-card__badge--default {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            color: var(--text-muted);
+        }
+
+        .ranking-card__name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .ranking-card__meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .ranking-card__score-box {
+            text-align: right;
+        }
+
+        .ranking-card__score {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-emerald-light);
+        }
+
+        .ranking-card__score-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ranking-card__bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .ranking-card__bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            background: linear-gradient(90deg, var(--accent-indigo), var(--accent-emerald));
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ranking-card__skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .ranking-card__skill {
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+        }
+
+        .ranking-card__skill--match {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--accent-emerald-light);
+        }
+
+        .ranking-card__skill--desej {
+            background: rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+        }
+
+        .ranking-card__matches {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .ranking-card__match-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ranking-card__match-item--ok {
+            color: var(--accent-emerald-light);
+        }
+
+        .ranking-card__match-item--sim {
+            color: var(--accent-indigo-light);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .no-results__icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .no-results__title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stored-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            color: var(--accent-emerald-light);
+            font-weight: 500;
+            margin-top: 12px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        /* ===================== GEMINI ANALYSIS ===================== */
+        .gemini-analysis {
+            background: var(--bg-input);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-top: 24px;
+            animation: fadeInUp 0.5s ease both;
+        }
+
+        .gemini-analysis__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .gemini-analysis__badge {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .gemini-analysis__title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .gemini-analysis__content {
+            font-size: 0.88rem;
+            line-height: 1.75;
+            color: var(--text-secondary);
+        }
+
+        .gemini-analysis__content h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 24px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .gemini-analysis__content h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-indigo-light);
+            margin: 20px 0 8px;
+        }
+
+        .gemini-analysis__content h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-violet);
+            margin: 16px 0 8px;
+        }
+
+        .gemini-analysis__content strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .gemini-analysis__content ul,
+        .gemini-analysis__content ol {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .gemini-analysis__content li {
+            margin: 4px 0;
+        }
+
+        .gemini-analysis__content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.82rem;
+        }
+
+        .gemini-analysis__content th {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-indigo-light);
+            font-weight: 700;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .gemini-analysis__content td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .gemini-analysis__content tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .gemini-analysis__content hr {
+            border: none;
+            border-top: 1px solid var(--border-subtle);
+            margin: 20px 0;
+        }
+
+        .gemini-analysis__content br {
+            display: block;
+            content: "";
+            margin-top: 4px;
+        }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media (max-width: 640px) {
+            .container {
+                padding: 24px 16px 60px;
+            }
+
+            .card {
+                padding: 24px 20px;
+                border-radius: var(--radius-lg);
+            }
+
+            .actions,
+            .nav-actions {
+                flex-direction: column;
+            }
+
+            .stepper {
+                gap: 0;
+            }
+
+            .stepper__label {
+                display: none;
+            }
+
+            .stepper__connector {
+                width: 40px;
+            }
+
+            .result-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <h1>Recrutador com IA</h1>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__badge">Sistema Ativo</div>
+            <h1 class="header__title">Recrutador IA</h1>
+            <p class="header__subtitle">Cadastre a vaga e importe currículos para análise inteligente</p>
+        </header>
 
-    <p>
-        <strong>1. Informe o Link do Ngrok gerado no Colab:</strong><br>
-        <input type="text" id="linkApi" value="https://lillianna-unhogged-nelida.ngrok-free.dev/parse_curriculo/"
-            style="width: 400px;">
-    </p>
+        <!-- Stepper -->
+        <nav class="stepper" id="stepper">
+            <div class="stepper__step active" id="step-indicator-1" data-step="1">
+                <span class="stepper__number">1</span>
+                <span class="stepper__label">Cadastro da Vaga</span>
+            </div>
+            <div class="stepper__connector" id="stepper-connector-1"></div>
+            <div class="stepper__step" id="step-indicator-2" data-step="2">
+                <span class="stepper__number">2</span>
+                <span class="stepper__label">Importar Currículos</span>
+            </div>
+            <div class="stepper__connector" id="stepper-connector-2"></div>
+            <div class="stepper__step" id="step-indicator-3" data-step="3">
+                <span class="stepper__number">3</span>
+                <span class="stepper__label">Matching IA</span>
+            </div>
+        </nav>
 
-    <p>
-        <strong>2. Selecione os Currículos (PDF - Máx 20 arquivos):</strong><br>
-        <input type="file" id="arquivoPdf" accept="application/pdf" multiple>
-    </p>
+        <!-- Form Card -->
+        <main class="card" id="form-card">
 
-    <p>
-        <button onclick="enviarCurriculo()">Enviar para o Colab</button>
-    </p>
+            <!-- ============================================================ -->
+            <!-- STEP 1 — Cadastro da Vaga -->
+            <!-- ============================================================ -->
+            <div class="step-panel active" id="step-1">
+                <!-- Basic Info -->
+                <div class="section-title">
+                    <span class="section-title__icon section-title__icon--info">📋</span>
+                    Informações da Vaga
+                </div>
 
-    <hr>
+                <div class="form-group" id="group-titulo">
+                    <label for="titulo">Título da Vaga <span class="required">*</span></label>
+                    <input type="text" id="titulo" placeholder="Ex: Cientista de Dados (Prevenção a Fraudes)">
+                    <span class="error-msg">Por favor, insira o título da vaga.</span>
+                </div>
 
-    <h3>Status / Resultado JSON:</h3>
-    <p id="status_mensagem" style="color: blue;">Aguardando envio...</p>
-    <button id="btnBaixar"
-        style="display: none; margin-bottom: 15px; padding: 8px 16px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 4px;"
-        onclick="baixarJson()"> Baixar JSON</button>
+                <div class="form-group" id="group-descricao">
+                    <label for="descricao">Descrição da Vaga <span class="required">*</span></label>
+                    <textarea id="descricao" placeholder="Descreva a vaga, responsabilidades e o que a empresa busca..."></textarea>
+                    <span class="error-msg">Por favor, insira a descrição da vaga.</span>
+                </div>
 
-    <pre id="caixaResultado"
-        style="background: #f4f4f4; padding: 10px; border: 1px solid #ccc; max-width: 800px; overflow: auto; min-height: 200px;">
-    Nenhum JSON recebido ainda.
-    </pre>
+                <div class="form-group" id="group-nivel">
+                    <label for="nivel">Nível Desejado <span class="required">*</span></label>
+                    <select id="nivel">
+                        <option value="" disabled selected>Selecione o nível</option>
+                        <option value="estagiario">Estagiário</option>
+                        <option value="junior">Júnior</option>
+                        <option value="pleno">Pleno</option>
+                        <option value="senior">Sênior</option>
+                    </select>
+                    <span class="error-msg">Por favor, selecione o nível desejado.</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Skills -->
+                <div class="section-title">
+                    <span class="section-title__icon section-title__icon--skills">⚡</span>
+                    Habilidades
+                </div>
+
+                <div class="form-group" id="group-obrigatorias">
+                    <label>Habilidades Obrigatórias <span class="required">*</span></label>
+                    <span class="hint">Digite uma habilidade e pressione <kbd style="padding: 1px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.7rem;">Enter</kbd> ou <kbd style="padding: 1px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.7rem;">,</kbd> para adicionar</span>
+                    <div class="tag-input-wrapper" id="tags-obrigatorias">
+                        <input type="text" id="input-obrigatorias" placeholder="Ex: Python, SQL, Machine Learning...">
+                    </div>
+                    <span class="error-msg">Adicione pelo menos uma habilidade obrigatória.</span>
+                </div>
+
+                <div class="form-group" id="group-desejaveis">
+                    <label>Habilidades Desejáveis</label>
+                    <span class="hint">Habilidades que são um diferencial, mas não impeditivas</span>
+                    <div class="tag-input-wrapper" id="tags-desejaveis">
+                        <input type="text" id="input-desejaveis" placeholder="Ex: Docker, Terraform, Cloud AWS...">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button class="btn btn--secondary" id="btn-limpar" type="button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>
+                        Limpar
+                    </button>
+                    <button class="btn btn--primary" id="btn-gerar" type="button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        Gerar vaga_exemplo
+                    </button>
+                </div>
+
+                <!-- Output -->
+                <div class="output-section" id="output-vaga" style="display: none;">
+                    <div class="output-header">
+                        <span class="output-header__title">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                            vaga_exemplo
+                        </span>
+                        <div class="output-header__actions">
+                            <button class="output-header__copy" id="btn-copiar-vaga">📋 Copiar</button>
+                        </div>
+                    </div>
+                    <pre class="output-code" id="output-code-vaga"></pre>
+                    <div class="success-banner" id="success-banner-vaga">
+                        ✅ Objeto <strong>vaga_exemplo</strong> gerado com sucesso! Copie e cole no notebook.
+                    </div>
+                </div>
+
+                <!-- Navigate to Step 2 -->
+                <div class="nav-actions" id="nav-to-step2" style="display: none;">
+                    <button class="btn btn--success" id="btn-next-step" type="button">
+                        Próximo: Importar Currículos
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- STEP 2 — Importar Currículos -->
+            <!-- ============================================================ -->
+            <div class="step-panel" id="step-2">
+                <!-- API Link -->
+                <div class="section-title">
+                    <span class="section-title__icon section-title__icon--api">🔗</span>
+                    Conexão com a API
+                </div>
+
+                <div class="form-group" id="group-api-link">
+                    <label for="linkApi">Link do Servidor (Ngrok) <span class="required">*</span></label>
+                    <span class="hint">Cole o link gerado pelo Colab para processar os currículos via IA</span>
+                    <input type="text" id="linkApi" placeholder="https://seu-link.ngrok-free.dev/parse_curriculo/" value="https://lillianna-unhogged-nelida.ngrok-free.dev/parse_curriculo/">
+                    <span class="error-msg">Por favor, insira o link da API.</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- File Upload -->
+                <div class="section-title">
+                    <span class="section-title__icon section-title__icon--upload">📄</span>
+                    Upload de Currículos
+                </div>
+
+                <div class="form-group" id="group-arquivos">
+                    <label>Arquivos PDF <span class="required">*</span></label>
+                    <span class="hint">Arraste os currículos ou clique para selecionar (máximo 20 arquivos)</span>
+                    <div class="file-upload-zone" id="file-upload-zone">
+                        <span class="file-upload-zone__icon">📁</span>
+                        <div class="file-upload-zone__title">Arraste PDFs aqui ou clique para selecionar</div>
+                        <div class="file-upload-zone__hint">Formatos aceitos: PDF • Máximo 20 arquivos</div>
+                        <input type="file" id="arquivoPdf" accept="application/pdf" multiple>
+                    </div>
+                    <span class="error-msg">Selecione ao menos um arquivo PDF.</span>
+
+                    <div class="file-list" id="file-list"></div>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="progress-status" id="progress-status">
+                        <span class="progress-status__spinner"></span>
+                        <span id="progress-text">Preparando...</span>
+                    </div>
+                    <div class="log-list" id="log-list"></div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button class="btn btn--secondary" id="btn-voltar" type="button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Voltar
+                    </button>
+                    <button class="btn btn--primary" id="btn-enviar" type="button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                        Enviar para o Colab
+                    </button>
+                </div>
+
+                <!-- Output -->
+                <div class="output-section" id="output-curriculos" style="display: none;">
+                    <div class="output-header">
+                        <span class="output-header__title">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            curriculos_extraidos.json
+                        </span>
+                        <div class="output-header__actions">
+                            <button class="output-header__copy" id="btn-copiar-curriculos">📋 Copiar</button>
+                            <button class="output-header__download" id="btn-baixar-curriculos">⬇ Baixar JSON</button>
+                        </div>
+                    </div>
+                    <pre class="output-code" id="output-code-curriculos"></pre>
+                    <div class="success-banner" id="success-banner-curriculos">
+                        ✅ Currículos processados com sucesso!
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- STEP 3 — Matching IA -->
+            <!-- ============================================================ -->
+            <div class="step-panel" id="step-3">
+                <!-- Resumo -->
+                <div class="section-title">
+                    <span class="section-title__icon section-title__icon--info">📊</span>
+                    Dados Carregados
+                </div>
+
+                <div class="result-summary" id="match-summary">
+                    <div class="result-summary__card">
+                        <div class="result-summary__value" id="summary-vaga-title">—</div>
+                        <div class="result-summary__label">Vaga</div>
+                    </div>
+                    <div class="result-summary__card">
+                        <div class="result-summary__value" id="summary-cv-count">0</div>
+                        <div class="result-summary__label">Currículos</div>
+                    </div>
+                    <div class="result-summary__card">
+                        <div class="result-summary__value" id="summary-nivel">—</div>
+                        <div class="result-summary__label">Nível</div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- API Link -->
+                <div class="section-title">
+                    <span class="section-title__icon section-title__icon--api">🔗</span>
+                    Conexão com a API de Matching
+                </div>
+
+                <div class="form-group" id="group-api-matching">
+                    <label for="linkApiMatching">Link do Servidor de Matching (Ngrok) <span class="required">*</span></label>
+                    <span class="hint">Cole o link gerado pelo Colab 2 (Sistema de Currículo) para executar o matching semântico</span>
+                    <input type="text" id="linkApiMatching" placeholder="https://seu-link.ngrok-free.dev/match" value="https://trespass-barrette-shakily.ngrok-free.dev/match">
+                    <span class="error-msg">Por favor, insira o link da API de matching.</span>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-container" id="match-progress-container">
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar" id="match-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-status" id="match-progress-status">
+                        <span class="progress-status__spinner"></span>
+                        <span id="match-progress-text">Processando matching...</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button class="btn btn--secondary" id="btn-voltar-step3" type="button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Voltar
+                    </button>
+                    <button class="btn btn--primary" id="btn-executar-match" type="button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+                        Executar Matching Semântico
+                    </button>
+                </div>
+
+                <!-- Results -->
+                <div class="output-section" id="match-results" style="display: none;">
+                    <div class="divider"></div>
+                    <div class="section-title">
+                        <span class="section-title__icon section-title__icon--skills">🏆</span>
+                        Ranking de Candidatos
+                    </div>
+                    <div id="ranking-container"></div>
+
+                    <!-- Gemini Analysis -->
+                    <div id="gemini-analysis-container" style="display: none;">
+                        <div class="gemini-analysis">
+                            <div class="gemini-analysis__header">
+                                <span class="gemini-analysis__badge">✨ GEMINI 2.5</span>
+                                <span class="gemini-analysis__title">Análise Qualitativa do Recrutador IA</span>
+                            </div>
+                            <div class="gemini-analysis__content" id="gemini-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
 
     <script>
-        async function enviarCurriculo() {
-            const inputLink = document.getElementById("linkApi").value;
-            const inputFile = document.getElementById("arquivoPdf");
-            const status_mensagem = document.getElementById("status_mensagem");
-            const caixaResultado = document.getElementById("caixaResultado");
+        // ===================== STATE =====================
+        const state = {
+            obrigatorias: [],
+            desejaveis: [],
+            currentStep: 1,
+            selectedFiles: [],
+            curriculos: [],
+            vaga: null
+        };
 
-            if (!inputLink.trim()) {
-                alert("Por favor, cole o link do Ngrok (servidor) antes de processar.");
-                return;
-            }
-            
-            if (!inputFile.files || inputFile.files.length === 0) {
-                alert("Selecione ao menos um arquivo PDF para envio.");
-                return;
-            }
-            
-            if (inputFile.files.length > 20) {
-                alert("Para manter a estabilidade da API, selecione no máximo 20 arquivos por vez.");
-                return;
+        // ===================== DOM REFS — STEP 1 =====================
+        const tituloInput     = document.getElementById('titulo');
+        const descricaoInput  = document.getElementById('descricao');
+        const nivelSelect     = document.getElementById('nivel');
+        const inputObrig      = document.getElementById('input-obrigatorias');
+        const inputDesej      = document.getElementById('input-desejaveis');
+        const tagsObrig       = document.getElementById('tags-obrigatorias');
+        const tagsDesej       = document.getElementById('tags-desejaveis');
+        const btnGerar        = document.getElementById('btn-gerar');
+        const btnLimpar       = document.getElementById('btn-limpar');
+        const btnCopiarVaga   = document.getElementById('btn-copiar-vaga');
+        const outputVaga      = document.getElementById('output-vaga');
+        const outputCodeVaga  = document.getElementById('output-code-vaga');
+        const successBannerV  = document.getElementById('success-banner-vaga');
+        const navToStep2      = document.getElementById('nav-to-step2');
+        const btnNextStep     = document.getElementById('btn-next-step');
+
+        // ===================== DOM REFS — STEP 2 =====================
+        const linkApiInput          = document.getElementById('linkApi');
+        const fileInput             = document.getElementById('arquivoPdf');
+        const fileUploadZone        = document.getElementById('file-upload-zone');
+        const fileListEl            = document.getElementById('file-list');
+        const btnEnviar             = document.getElementById('btn-enviar');
+        const btnVoltar             = document.getElementById('btn-voltar');
+        const progressContainer     = document.getElementById('progress-container');
+        const progressBar           = document.getElementById('progress-bar');
+        const progressText          = document.getElementById('progress-text');
+        const logList               = document.getElementById('log-list');
+        const outputCurriculos      = document.getElementById('output-curriculos');
+        const outputCodeCurriculos  = document.getElementById('output-code-curriculos');
+        const successBannerC        = document.getElementById('success-banner-curriculos');
+        const btnCopiarCurriculos   = document.getElementById('btn-copiar-curriculos');
+        const btnBaixarCurriculos   = document.getElementById('btn-baixar-curriculos');
+
+        // ===================== DOM REFS — STEPPER =====================
+        const stepIndicator1    = document.getElementById('step-indicator-1');
+        const stepIndicator2    = document.getElementById('step-indicator-2');
+        const stepIndicator3    = document.getElementById('step-indicator-3');
+        const stepperConnector1 = document.getElementById('stepper-connector-1');
+        const stepperConnector2 = document.getElementById('stepper-connector-2');
+        const stepPanel1        = document.getElementById('step-1');
+        const stepPanel2        = document.getElementById('step-2');
+        const stepPanel3        = document.getElementById('step-3');
+
+        // ===================== DOM REFS — STEP 3 =====================
+        const linkApiMatching       = document.getElementById('linkApiMatching');
+        const btnVoltarStep3        = document.getElementById('btn-voltar-step3');
+        const btnExecutarMatch      = document.getElementById('btn-executar-match');
+        const matchProgressContainer = document.getElementById('match-progress-container');
+        const matchProgressBar      = document.getElementById('match-progress-bar');
+        const matchProgressText     = document.getElementById('match-progress-text');
+        const matchResults          = document.getElementById('match-results');
+        const rankingContainer      = document.getElementById('ranking-container');
+        const summaryVagaTitle      = document.getElementById('summary-vaga-title');
+        const summaryCvCount        = document.getElementById('summary-cv-count');
+        const summaryNivel          = document.getElementById('summary-nivel');
+
+        // ===================== STEPPER NAVIGATION =====================
+        function goToStep(n) {
+            state.currentStep = n;
+
+            // Update panels
+            stepPanel1.classList.toggle('active', n === 1);
+            stepPanel2.classList.toggle('active', n === 2);
+            stepPanel3.classList.toggle('active', n === 3);
+
+            // Update indicators
+            stepIndicator1.className = 'stepper__step' + (n === 1 ? ' active' : (n > 1 ? ' completed' : ''));
+            stepIndicator2.className = 'stepper__step' + (n === 2 ? ' active' : (n > 2 ? ' completed' : ''));
+            stepIndicator3.className = 'stepper__step' + (n === 3 ? ' active' : '');
+            stepperConnector1.classList.toggle('active', n >= 2);
+            stepperConnector2.classList.toggle('active', n >= 3);
+
+            // Update step 3 summary
+            if (n === 3) {
+                updateStep3Summary();
             }
 
-            document.getElementById("btnBaixar").style.display = "none";
-            
-            const totalArquivos = inputFile.files.length;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateStep3Summary() {
+            if (state.vaga) {
+                summaryVagaTitle.textContent = state.vaga.titulo.length > 20
+                    ? state.vaga.titulo.substring(0, 20) + '…'
+                    : state.vaga.titulo;
+                summaryNivel.textContent = state.vaga.nivel_desejado || '—';
+            }
+            summaryCvCount.textContent = state.curriculos.length;
+        }
+
+        stepIndicator1.addEventListener('click', () => goToStep(1));
+        stepIndicator2.addEventListener('click', () => goToStep(2));
+        stepIndicator3.addEventListener('click', () => { if (state.vaga && state.curriculos.length > 0) goToStep(3); });
+        btnNextStep.addEventListener('click', () => goToStep(2));
+        btnVoltar.addEventListener('click', () => goToStep(1));
+        btnVoltarStep3.addEventListener('click', () => goToStep(2));
+
+        // ===================== TAG MANAGEMENT =====================
+        function addTag(type, value) {
+            const trimmed = value.trim().toLowerCase();
+            if (!trimmed) return;
+
+            const list = type === 'obrig' ? state.obrigatorias : state.desejaveis;
+            // Avoid duplicates
+            if (list.includes(trimmed)) return;
+
+            list.push(trimmed);
+            renderTags(type);
+            clearValidation(type === 'obrig' ? 'group-obrigatorias' : 'group-desejaveis');
+        }
+
+        function removeTag(type, index) {
+            const list = type === 'obrig' ? state.obrigatorias : state.desejaveis;
+            list.splice(index, 1);
+            renderTags(type);
+        }
+
+        function renderTags(type) {
+            const list      = type === 'obrig' ? state.obrigatorias : state.desejaveis;
+            const container = type === 'obrig' ? tagsObrig : tagsDesej;
+            const input     = type === 'obrig' ? inputObrig : inputDesej;
+            const cssClass  = type === 'obrig' ? 'tag--obrig' : 'tag--desej';
+
+            // Remove existing tags
+            container.querySelectorAll('.tag').forEach(el => el.remove());
+
+            // Insert new tags before the input
+            list.forEach((tag, i) => {
+                const el = document.createElement('span');
+                el.className = `tag ${cssClass}`;
+                el.innerHTML = `${escapeHtml(tag)}<button class="tag__remove" type="button" aria-label="Remover ${escapeHtml(tag)}">&times;</button>`;
+                el.querySelector('.tag__remove').addEventListener('click', () => removeTag(type, i));
+                container.insertBefore(el, input);
+            });
+        }
+
+        function handleTagInput(e, type) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const val = e.target.value.replace(/,/g, '');
+                addTag(type, val);
+                e.target.value = '';
+            }
+            // Backspace removes last tag
+            if (e.key === 'Backspace' && e.target.value === '') {
+                const list = type === 'obrig' ? state.obrigatorias : state.desejaveis;
+                if (list.length > 0) {
+                    list.pop();
+                    renderTags(type);
+                }
+            }
+        }
+
+        // Click on wrapper focuses input
+        tagsObrig.addEventListener('click', () => inputObrig.focus());
+        tagsDesej.addEventListener('click', () => inputDesej.focus());
+
+        inputObrig.addEventListener('keydown', e => handleTagInput(e, 'obrig'));
+        inputDesej.addEventListener('keydown', e => handleTagInput(e, 'desej'));
+
+        // Handle paste — split by comma
+        inputObrig.addEventListener('paste', e => handlePaste(e, 'obrig'));
+        inputDesej.addEventListener('paste', e => handlePaste(e, 'desej'));
+
+        function handlePaste(e, type) {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text');
+            pasted.split(/[,;\n]+/).forEach(v => addTag(type, v));
+        }
+
+        // ===================== VALIDATION — STEP 1 =====================
+        function validateStep1() {
+            let valid = true;
+
+            if (!tituloInput.value.trim()) {
+                setError('group-titulo');
+                valid = false;
+            } else {
+                clearValidation('group-titulo');
+            }
+
+            if (!descricaoInput.value.trim()) {
+                setError('group-descricao');
+                valid = false;
+            } else {
+                clearValidation('group-descricao');
+            }
+
+            if (!nivelSelect.value) {
+                setError('group-nivel');
+                valid = false;
+            } else {
+                clearValidation('group-nivel');
+            }
+
+            if (state.obrigatorias.length === 0) {
+                setError('group-obrigatorias');
+                valid = false;
+            } else {
+                clearValidation('group-obrigatorias');
+            }
+
+            return valid;
+        }
+
+        function setError(groupId) {
+            document.getElementById(groupId).classList.add('error');
+        }
+
+        function clearValidation(groupId) {
+            document.getElementById(groupId).classList.remove('error');
+        }
+
+        // Clear inline errors on input
+        tituloInput.addEventListener('input', () => clearValidation('group-titulo'));
+        descricaoInput.addEventListener('input', () => clearValidation('group-descricao'));
+        nivelSelect.addEventListener('change', () => clearValidation('group-nivel'));
+
+        // ===================== GENERATE VAGA =====================
+        btnGerar.addEventListener('click', () => {
+            if (!validateStep1()) return;
+
+            const vaga = {
+                titulo: tituloInput.value.trim().toLowerCase(),
+                descricao: descricaoInput.value.trim().toLowerCase(),
+                habilidades_obrigatorias: [...state.obrigatorias],
+                habilidades_desejaveis: [...state.desejaveis],
+                area_desejada: tituloInput.value.trim().toLowerCase(),
+                nivel_desejado: nivelSelect.value
+            };
+
+            // Guardar a vaga no estado (para usar no Step 3)
+            state.vaga = vaga;
+
+            const pythonStr = formatAsPython(vaga);
+
+            outputCodeVaga.textContent = pythonStr;
+            outputVaga.style.display = 'block';
+            successBannerV.classList.add('visible');
+            navToStep2.style.display = 'flex';
+
+            // Smooth scroll to output
+            setTimeout(() => {
+                outputVaga.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        });
+
+        function formatAsPython(vaga) {
+            const indent = '    ';
+            let out = 'vaga_exemplo = {\n';
+            out += `${indent}'titulo': '${escapePy(vaga.titulo)}',\n`;
+            out += `${indent}'descricao': """${escapePy(vaga.descricao)}""",\n`;
+            out += `${indent}'habilidades_obrigatorias': [\n`;
+            vaga.habilidades_obrigatorias.forEach((h, i) => {
+                const comma = i < vaga.habilidades_obrigatorias.length - 1 ? ',' : '';
+                out += `${indent}${indent}'${escapePy(h)}'${comma}\n`;
+            });
+            out += `${indent}],\n`;
+            out += `${indent}'habilidades_desejaveis': [\n`;
+            vaga.habilidades_desejaveis.forEach((h, i) => {
+                const comma = i < vaga.habilidades_desejaveis.length - 1 ? ',' : '';
+                out += `${indent}${indent}'${escapePy(h)}'${comma}\n`;
+            });
+            out += `${indent}],\n`;
+            out += `${indent}'area_desejada': '${escapePy(vaga.area_desejada)}',\n`;
+            out += `${indent}'nivel_desejado': '${escapePy(vaga.nivel_desejado)}'\n`;
+            out += '}';
+            return out;
+        }
+
+        function escapePy(s) {
+            return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        // ===================== COPY VAGA =====================
+        btnCopiarVaga.addEventListener('click', () => {
+            copyToClipboard(outputCodeVaga.textContent, btnCopiarVaga);
+        });
+
+        // ===================== CLEAR STEP 1 =====================
+        btnLimpar.addEventListener('click', () => {
+            tituloInput.value = '';
+            descricaoInput.value = '';
+            nivelSelect.selectedIndex = 0;
+            state.obrigatorias = [];
+            state.desejaveis = [];
+            renderTags('obrig');
+            renderTags('desej');
+            outputVaga.style.display = 'none';
+            navToStep2.style.display = 'none';
+            successBannerV.classList.remove('visible');
+            ['group-titulo', 'group-descricao', 'group-nivel', 'group-obrigatorias'].forEach(clearValidation);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===================== FILE UPLOAD — STEP 2 =====================
+        // Drag & Drop
+        fileUploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadZone.classList.add('dragover');
+        });
+
+        fileUploadZone.addEventListener('dragleave', () => {
+            fileUploadZone.classList.remove('dragover');
+        });
+
+        fileUploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(fileListRaw) {
+            const newFiles = Array.from(fileListRaw).filter(f => f.type === 'application/pdf');
+            if (newFiles.length === 0) return;
+
+            // Merge, avoiding duplicates by name
+            newFiles.forEach(f => {
+                if (!state.selectedFiles.find(sf => sf.name === f.name && sf.size === f.size)) {
+                    state.selectedFiles.push(f);
+                }
+            });
+
+            if (state.selectedFiles.length > 20) {
+                state.selectedFiles = state.selectedFiles.slice(0, 20);
+                alert('Máximo de 20 arquivos. Alguns arquivos foram removidos.');
+            }
+
+            clearValidation('group-arquivos');
+            renderFileList();
+        }
+
+        function renderFileList() {
+            fileListEl.innerHTML = '';
+            state.selectedFiles.forEach((f, i) => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                const sizeKB = (f.size / 1024).toFixed(0);
+                item.innerHTML = `
+                    <span class="file-item__icon">📄</span>
+                    <span class="file-item__name">${escapeHtml(f.name)}</span>
+                    <span class="file-item__size">${sizeKB} KB</span>
+                    <button class="file-item__remove" type="button" title="Remover">&times;</button>
+                `;
+                item.querySelector('.file-item__remove').addEventListener('click', () => {
+                    state.selectedFiles.splice(i, 1);
+                    renderFileList();
+                });
+                fileListEl.appendChild(item);
+            });
+        }
+
+        // ===================== VALIDATION — STEP 2 =====================
+        function validateStep2() {
+            let valid = true;
+
+            if (!linkApiInput.value.trim()) {
+                setError('group-api-link');
+                valid = false;
+            } else {
+                clearValidation('group-api-link');
+            }
+
+            if (state.selectedFiles.length === 0) {
+                setError('group-arquivos');
+                valid = false;
+            } else {
+                clearValidation('group-arquivos');
+            }
+
+            return valid;
+        }
+
+        linkApiInput.addEventListener('input', () => clearValidation('group-api-link'));
+
+        // ===================== SEND CURRICULOS =====================
+        btnEnviar.addEventListener('click', async () => {
+            if (!validateStep2()) return;
+
+            const apiLink = linkApiInput.value.trim();
+            const totalArquivos = state.selectedFiles.length;
             const jsonsExtraidos = [];
 
-            caixaResultado.innerText = "Iniciando processamento em lote...\n";
+            // Show progress
+            progressContainer.classList.add('visible');
+            logList.innerHTML = '';
+            progressBar.style.width = '0%';
+            outputCurriculos.style.display = 'none';
+            successBannerC.classList.remove('visible');
+            btnEnviar.disabled = true;
+            btnVoltar.disabled = true;
 
             for (let i = 0; i < totalArquivos; i++) {
-                const arquivoAtual = inputFile.files[i];
-                
-                status_mensagem.innerText = `Processando currículo ${i + 1} de ${totalArquivos} (${arquivoAtual.name})...`;
-                status_mensagem.style.color = "orange";
+                const arquivoAtual = state.selectedFiles[i];
+                const progress = ((i) / totalArquivos * 100);
+                progressBar.style.width = progress + '%';
+                progressText.textContent = `Processando ${i + 1} de ${totalArquivos}: ${arquivoAtual.name}`;
 
                 const formData = new FormData();
-                formData.append("arquivo", arquivoAtual);
+                formData.append('arquivo', arquivoAtual);
 
                 try {
-                    const resposta = await fetch(inputLink, {
-                        method: "POST",
+                    const resposta = await fetch(apiLink, {
+                        method: 'POST',
+                        headers: {
+                            'ngrok-skip-browser-warning': 'true'
+                        },
                         body: formData
                     });
 
                     if (resposta.ok) {
                         const jsonPronto = await resposta.json();
                         jsonsExtraidos.push(jsonPronto);
-                        
-                        caixaResultado.innerText += `\n[OK] ${arquivoAtual.name} extraído com sucesso.`;
-                        caixaResultado.scrollTop = caixaResultado.scrollHeight;
-                        
+                        addLog('ok', `[OK] ${arquivoAtual.name} extraído com sucesso.`);
                     } else {
-                        status_mensagem.innerText = `Erro ao extrair o arquivo ${arquivoAtual.name}. Pulando...`;
-                        status_mensagem.style.color = "red";
-                        caixaResultado.innerText += `\n[ERRO] Falha na API (${resposta.status}) no currículo: ${arquivoAtual.name}`;
+                        addLog('error', `[ERRO] Falha na API (${resposta.status}): ${arquivoAtual.name}`);
                     }
-
                 } catch (erro) {
-                    status_mensagem.innerText = "Falha de comunicação com o servidor.";
-                    status_mensagem.style.color = "red";
-                    caixaResultado.innerText += `\n[ERRO] Timeout ou falha de rede ao processar: ${arquivoAtual.name}`;
-                    console.error("Erro na requisição:", erro);
+                    addLog('error', `[ERRO] Falha de rede: ${arquivoAtual.name}`);
+                    console.error('Erro na requisição:', erro);
                 }
             }
 
-            status_mensagem.innerText = `Lote finalizado. Total de currículos processados: ${jsonsExtraidos.length}.`;
-            status_mensagem.style.color = "green";
-            
-            caixaResultado.innerText = JSON.stringify(jsonsExtraidos, null, 2);
-            window.ultimoJson = jsonsExtraidos;
-            document.getElementById("btnBaixar").style.display = "inline-block";
+            progressBar.style.width = '100%';
+            progressText.textContent = `Concluído! ${jsonsExtraidos.length} de ${totalArquivos} processados.`;
+
+            // Remove spinner after completion
+            const spinner = document.querySelector('.progress-status__spinner');
+            if (spinner) spinner.style.display = 'none';
+
+            btnEnviar.disabled = false;
+            btnVoltar.disabled = false;
+
+            if (jsonsExtraidos.length > 0) {
+                state.curriculos = jsonsExtraidos;
+                outputCodeCurriculos.textContent = JSON.stringify(jsonsExtraidos, null, 2);
+                outputCurriculos.style.display = 'block';
+                successBannerC.classList.add('visible');
+
+                // Mostrar botão para ir ao Step 3
+                navToStep3El.style.display = 'flex';
+
+                setTimeout(() => {
+                    outputCurriculos.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        });
+
+        function addLog(type, message) {
+            const el = document.createElement('div');
+            el.className = `log-item log-item--${type}`;
+            el.textContent = message;
+            logList.appendChild(el);
+            logList.scrollTop = logList.scrollHeight;
         }
 
-        function baixarJson() {
-            if (!window.ultimoJson) return;
+        // ===================== COPY CURRICULOS =====================
+        btnCopiarCurriculos.addEventListener('click', () => {
+            copyToClipboard(outputCodeCurriculos.textContent, btnCopiarCurriculos);
+        });
 
-            const jsonString = JSON.stringify(window.ultimoJson, null, 2);
-            const blob = new Blob([jsonString], { type: "application/json" });
+        // ===================== DOWNLOAD JSON =====================
+        btnBaixarCurriculos.addEventListener('click', () => {
+            if (!state.curriculos.length) return;
+
+            const jsonString = JSON.stringify(state.curriculos, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            
+
             const a = document.createElement('a');
             a.href = url;
-            a.download = "curriculos_extraidos.json";
+            a.download = 'curriculos_extraidos.json';
             document.body.appendChild(a);
             a.click();
-            
+
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        });
+
+        // ===================== UTILS =====================
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
         }
+
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.textContent;
+                btn.textContent = '✅ Copiado!';
+                btn.classList.add('output-header__copy--copied');
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove('output-header__copy--copied');
+                }, 2000);
+            });
+        }
+
+        // ===================== STEP 3 — MATCHING =====================
+        linkApiMatching.addEventListener('input', () => clearValidation('group-api-matching'));
+
+        btnExecutarMatch.addEventListener('click', async () => {
+            // Validate
+            if (!linkApiMatching.value.trim()) {
+                setError('group-api-matching');
+                return;
+            }
+            clearValidation('group-api-matching');
+
+            if (!state.vaga) {
+                alert('Erro: Vaga não cadastrada. Volte ao Step 1.');
+                return;
+            }
+            if (state.curriculos.length === 0) {
+                alert('Erro: Nenhum currículo processado. Volte ao Step 2.');
+                return;
+            }
+
+            const apiUrl = linkApiMatching.value.trim();
+
+            // Show progress
+            matchProgressContainer.classList.add('visible');
+            matchProgressBar.style.width = '30%';
+            matchProgressText.textContent = `Enviando ${state.curriculos.length} currículo(s) + vaga para análise...`;
+            matchResults.style.display = 'none';
+            btnExecutarMatch.disabled = true;
+            btnVoltarStep3.disabled = true;
+
+            try {
+                matchProgressBar.style.width = '50%';
+                matchProgressText.textContent = 'Executando matching semântico...';
+
+                const payload = {
+                    vaga: state.vaga,
+                    curriculos: state.curriculos
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                matchProgressBar.style.width = '80%';
+
+                if (!response.ok) {
+                    throw new Error(`API retornou status ${response.status}`);
+                }
+
+                const resultado = await response.json();
+
+                matchProgressBar.style.width = '100%';
+                matchProgressText.textContent = `Matching concluído! ${resultado.ranking?.length || 0} candidatos ranqueados.`;
+
+                // Hide spinner
+                const spinner3 = matchProgressContainer.querySelector('.progress-status__spinner');
+                if (spinner3) spinner3.style.display = 'none';
+
+                // Render results
+                renderRanking(resultado);
+
+            } catch (erro) {
+                matchProgressBar.style.width = '100%';
+                matchProgressBar.style.background = 'linear-gradient(90deg, var(--accent-rose), #be123c)';
+                matchProgressText.textContent = `Erro: ${erro.message}`;
+                const spinner3 = matchProgressContainer.querySelector('.progress-status__spinner');
+                if (spinner3) spinner3.style.display = 'none';
+                console.error('Erro no matching:', erro);
+            }
+
+            btnExecutarMatch.disabled = false;
+            btnVoltarStep3.disabled = false;
+        });
+
+        function renderRanking(resultado) {
+            rankingContainer.innerHTML = '';
+
+            if (!resultado.ranking || resultado.ranking.length === 0) {
+                rankingContainer.innerHTML = `
+                    <div class="no-results">
+                        <span class="no-results__icon">🔍</span>
+                        <div class="no-results__title">Nenhum resultado encontrado</div>
+                        <p>Verifique se os currículos e a vaga estão corretos.</p>
+                    </div>
+                `;
+                matchResults.style.display = 'block';
+                return;
+            }
+
+            resultado.ranking.forEach((r, i) => {
+                const pos = r.posicao || (i + 1);
+                const scorePercent = Math.round(r.score_semantico * 100);
+
+                let badgeClass = 'ranking-card__badge--default';
+                if (pos === 1) badgeClass = 'ranking-card__badge--1';
+                else if (pos === 2) badgeClass = 'ranking-card__badge--2';
+                else if (pos === 3) badgeClass = 'ranking-card__badge--3';
+
+                // Build skills HTML
+                const matchObrig = new Set(r.match_obrigatorias || []);
+                const matchDesej = new Set(r.match_desejaveis || []);
+
+                let skillsHtml = '';
+                (r.habilidades || []).forEach(skill => {
+                    if (matchObrig.has(skill)) {
+                        skillsHtml += `<span class="ranking-card__skill ranking-card__skill--match">✓ ${escapeHtml(skill)}</span>`;
+                    } else if (matchDesej.has(skill)) {
+                        skillsHtml += `<span class="ranking-card__skill ranking-card__skill--desej">★ ${escapeHtml(skill)}</span>`;
+                    } else {
+                        skillsHtml += `<span class="ranking-card__skill">${escapeHtml(skill)}</span>`;
+                    }
+                });
+
+                // Similarity expansions
+                let simHtml = '';
+                if (r.similaridades_expandidas && r.similaridades_expandidas.length > 0) {
+                    const simItems = r.similaridades_expandidas.slice(0, 5).map(s =>
+                        `<span class="ranking-card__match-item ranking-card__match-item--sim">🔗 ${escapeHtml(s.cv_skill)} ≈ ${escapeHtml(s.vaga_skill)} (${(s.similaridade * 100).toFixed(0)}%)</span>`
+                    ).join('');
+                    simHtml = simItems;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'ranking-card';
+                card.style.animationDelay = `${i * 0.08}s`;
+                card.innerHTML = `
+                    <div class="ranking-card__header">
+                        <div class="ranking-card__position">
+                            <span class="ranking-card__badge ${badgeClass}">${pos}º</span>
+                            <div>
+                                <div class="ranking-card__name">${escapeHtml(r.candidato_id || 'Candidato ' + pos)}</div>
+                                <div class="ranking-card__meta">${escapeHtml(r.area_atuacao || 'N/A')} · ${escapeHtml(r.nivel_cv || 'N/A')}</div>
+                            </div>
+                        </div>
+                        <div class="ranking-card__score-box">
+                            <div class="ranking-card__score">${scorePercent}%</div>
+                            <div class="ranking-card__score-label">similaridade</div>
+                        </div>
+                    </div>
+                    <div class="ranking-card__bar">
+                        <div class="ranking-card__bar-fill" style="width: ${scorePercent}%"></div>
+                    </div>
+                    <div class="ranking-card__skills">${skillsHtml}</div>
+                    <div class="ranking-card__matches">
+                        ${matchObrig.size > 0 ? `<span class="ranking-card__match-item ranking-card__match-item--ok">✅ ${matchObrig.size} obrigatória(s)</span>` : ''}
+                        ${matchDesej.size > 0 ? `<span class="ranking-card__match-item ranking-card__match-item--ok">⭐ ${matchDesej.size} desejável(is)</span>` : ''}
+                        ${simHtml}
+                    </div>
+                `;
+                rankingContainer.appendChild(card);
+            });
+
+            matchResults.style.display = 'block';
+
+            // Render Gemini analysis if available
+            const geminiContainer = document.getElementById('gemini-analysis-container');
+            const geminiContent = document.getElementById('gemini-content');
+            if (resultado.analise_gemini && resultado.analise_gemini.length > 0) {
+                geminiContent.innerHTML = markdownToHtml(resultado.analise_gemini);
+                geminiContainer.style.display = 'block';
+            } else {
+                geminiContainer.style.display = 'none';
+            }
+
+            setTimeout(() => {
+                matchResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 200);
+        }
+
+        // ===================== MARKDOWN TO HTML (simple) =====================
+        function markdownToHtml(md) {
+            let html = escapeHtml(md);
+
+            // Headers
+            html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+            // Bold
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Italic
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+            // Horizontal rules
+            html = html.replace(/^---$/gm, '<hr>');
+
+            // Tables
+            html = html.replace(/^\|(.+)\|$/gm, (match, content) => {
+                const cells = content.split('|').map(c => c.trim());
+                // Check if separator row
+                if (cells.every(c => /^[-:]+$/.test(c))) return '<!--sep-->';
+                return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+            });
+            // Wrap consecutive <tr> in <table>
+            html = html.replace(/((<tr>.*<\/tr>\n?)+)/g, (match) => {
+                let tableHtml = match.replace('<!--sep-->', '');
+                // Convert first row to th
+                tableHtml = tableHtml.replace(/<tr>(.*?)<\/tr>/, (m, inner) => {
+                    return '<thead><tr>' + inner.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>') + '</tr></thead>';
+                });
+                return '<table>' + tableHtml + '</table>';
+            });
+            html = html.replace(/<!--sep-->\n?/g, '');
+
+            // Unordered lists
+            html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+            html = html.replace(/((<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+            // Line breaks
+            html = html.replace(/<br>/g, '<br>');
+            html = html.replace(/\n\n/g, '<br><br>');
+            html = html.replace(/\n/g, '<br>');
+
+            // Clean up
+            html = html.replace(/<br><\/h/g, '</h');
+            html = html.replace(/<br><ul>/g, '<ul>');
+            html = html.replace(/<\/ul><br>/g, '</ul>');
+            html = html.replace(/<br><table>/g, '<table>');
+            html = html.replace(/<\/table><br>/g, '</table>');
+            html = html.replace(/<br><hr>/g, '<hr>');
+
+            return html;
+        }
+
+        // ===================== NAV TO STEP 3 (after curriculos) =====================
+        const navToStep3El = document.createElement('div');
+        navToStep3El.className = 'nav-actions';
+        navToStep3El.style.display = 'none';
+        navToStep3El.innerHTML = `
+            <button class="btn btn--success" id="btn-next-step3" type="button">
+                Próximo: Executar Matching IA
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        `;
+        outputCurriculos.parentElement.appendChild(navToStep3El);
+        navToStep3El.querySelector('#btn-next-step3').addEventListener('click', () => goToStep(3));
+
+        // Button ripple position
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const rect = btn.getBoundingClientRect();
+                btn.style.setProperty('--x', ((e.clientX - rect.left) / rect.width * 100) + '%');
+                btn.style.setProperty('--y', ((e.clientY - rect.top) / rect.height * 100) + '%');
+            });
+        });
     </script>
 </body>
-
 </html>
