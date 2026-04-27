@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema de recrutamento inteligente — cadastre vagas e importe currículos para análise com IA">
+    <meta name="description"
+        content="Sistema de recrutamento inteligente — cadastre vagas e importe currículos para análise com IA">
     <title>Recrutador IA — Vaga & Currículos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         /* ===================== RESET & VARIABLES ===================== */
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -70,7 +75,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: 
+            background:
                 radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
                 radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 60%);
@@ -80,9 +85,17 @@
         }
 
         @keyframes bgShift {
-            0%   { transform: translate(0, 0) rotate(0deg); }
-            50%  { transform: translate(-2%, -1%) rotate(1deg); }
-            100% { transform: translate(1%, 2%) rotate(-1deg); }
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(-2%, -1%) rotate(1deg);
+            }
+
+            100% {
+                transform: translate(1%, 2%) rotate(-1deg);
+            }
         }
 
         /* ===================== LAYOUT ===================== */
@@ -127,8 +140,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
         }
 
         .header__title {
@@ -150,8 +170,15 @@
         }
 
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-12px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===================== STEPPER ===================== */
@@ -250,8 +277,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===================== STEP PANELS ===================== */
@@ -402,8 +436,15 @@
         }
 
         @keyframes tagIn {
-            from { opacity: 0; transform: scale(0.85); }
-            to   { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .tag--obrig {
@@ -721,7 +762,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ===================== OUTPUT SECTION ===================== */
@@ -877,9 +920,19 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            75% { transform: translateX(4px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
         }
 
         /* ===================== NAV BUTTONS ===================== */
@@ -1116,21 +1169,23 @@
 
         /* ===================== GEMINI ANALYSIS ===================== */
         .gemini-analysis {
-            background: var(--bg-input);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            margin-top: 24px;
+            background: linear-gradient(180deg, rgba(17, 24, 39, 0.9) 0%, rgba(10, 14, 26, 0.95) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            border-radius: var(--radius-xl);
+            padding: 0;
+            margin-top: 28px;
             animation: fadeInUp 0.5s ease both;
+            overflow: hidden;
+            box-shadow: 0 4px 40px rgba(99, 102, 241, 0.06), 0 0 0 1px rgba(139, 92, 246, 0.08) inset;
         }
 
         .gemini-analysis__header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-subtle);
+            gap: 12px;
+            padding: 20px 28px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(99, 102, 241, 0.05));
+            border-bottom: 1px solid rgba(139, 92, 246, 0.12);
         }
 
         .gemini-analysis__badge {
@@ -1138,90 +1193,224 @@
             color: #fff;
             padding: 6px 14px;
             border-radius: 99px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 12px rgba(139, 92, 246, 0.3);
+            flex-shrink: 0;
         }
 
         .gemini-analysis__title {
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--text-primary);
         }
 
         .gemini-analysis__content {
+            padding: 28px;
             font-size: 0.88rem;
-            line-height: 1.75;
+            line-height: 1.8;
             color: var(--text-secondary);
         }
 
+        /* --- Headings --- */
         .gemini-analysis__content h1 {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--text-primary);
-            margin: 24px 0 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-subtle);
+            margin: 28px 0 16px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.06));
+            border-left: 3px solid var(--accent-indigo);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            letter-spacing: 0.02em;
+        }
+
+        .gemini-analysis__content h1:first-child {
+            margin-top: 0;
         }
 
         .gemini-analysis__content h2 {
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             font-weight: 700;
             color: var(--accent-indigo-light);
-            margin: 20px 0 8px;
+            margin: 24px 0 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .gemini-analysis__content h3 {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: 700;
             color: var(--accent-violet);
-            margin: 16px 0 8px;
+            margin: 18px 0 8px;
+            padding-left: 12px;
+            border-left: 2px solid rgba(139, 92, 246, 0.4);
         }
 
+        .gemini-analysis__content h4 {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--accent-emerald-light);
+            margin: 14px 0 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-size: 0.78rem;
+        }
+
+        /* --- Text --- */
         .gemini-analysis__content strong {
             color: var(--text-primary);
             font-weight: 600;
         }
 
-        .gemini-analysis__content ul,
-        .gemini-analysis__content ol {
-            padding-left: 20px;
+        .gemini-analysis__content p {
             margin: 8px 0;
         }
 
-        .gemini-analysis__content li {
-            margin: 4px 0;
+        /* --- Inline code (backticks) --- */
+        .gemini-analysis__content code {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--accent-indigo-light);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.82em;
+            font-weight: 500;
         }
 
+        /* --- Lists --- */
+        .gemini-analysis__content ul,
+        .gemini-analysis__content ol {
+            padding-left: 8px;
+            margin: 10px 0;
+            list-style: none;
+        }
+
+        .gemini-analysis__content ul li {
+            position: relative;
+            padding-left: 20px;
+            margin: 6px 0;
+        }
+
+        .gemini-analysis__content ul li::before {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: 9px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+        }
+
+        .gemini-analysis__content ol {
+            counter-reset: ol-counter;
+            padding-left: 8px;
+        }
+
+        .gemini-analysis__content ol li {
+            counter-increment: ol-counter;
+            position: relative;
+            padding-left: 28px;
+            margin: 6px 0;
+        }
+
+        .gemini-analysis__content ol li::before {
+            content: counter(ol-counter);
+            position: absolute;
+            left: 0;
+            top: 1px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.12);
+            border-radius: 50%;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent-indigo-light);
+        }
+
+        /* --- Blockquote --- */
+        .gemini-analysis__content blockquote {
+            margin: 14px 0;
+            padding: 14px 18px;
+            background: rgba(139, 92, 246, 0.06);
+            border-left: 3px solid var(--accent-violet);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            color: var(--text-secondary);
+            font-style: italic;
+            position: relative;
+        }
+
+        .gemini-analysis__content blockquote p {
+            margin: 0;
+        }
+
+        /* --- Table --- */
         .gemini-analysis__content table {
             width: 100%;
             border-collapse: collapse;
-            margin: 16px 0;
-            font-size: 0.82rem;
+            margin: 18px 0;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .gemini-analysis__content tr:first-child {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.08));
         }
 
         .gemini-analysis__content th {
-            background: rgba(99, 102, 241, 0.1);
             color: var(--accent-indigo-light);
             font-weight: 700;
             text-align: left;
-            padding: 10px 12px;
-            border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+            padding: 12px 14px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.15);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
         }
 
         .gemini-analysis__content td {
-            padding: 8px 12px;
-            border-bottom: 1px solid var(--border-subtle);
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
         }
 
-        .gemini-analysis__content tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
+        .gemini-analysis__content tbody tr {
+            transition: background var(--transition-fast);
         }
 
+        .gemini-analysis__content tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .gemini-analysis__content tbody tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .gemini-analysis__content tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .gemini-analysis__content td strong {
+            color: var(--text-primary);
+        }
+
+        /* --- Horizontal Rule --- */
         .gemini-analysis__content hr {
             border: none;
-            border-top: 1px solid var(--border-subtle);
-            margin: 20px 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2), transparent);
+            margin: 24px 0;
         }
 
         .gemini-analysis__content br {
@@ -1264,11 +1453,11 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div class="header__badge">Sistema Ativo</div>
             <h1 class="header__title">Recrutador IA</h1>
             <p class="header__subtitle">Cadastre a vaga e importe currículos para análise inteligente</p>
         </header>
@@ -1312,7 +1501,8 @@
 
                 <div class="form-group" id="group-descricao">
                     <label for="descricao">Descrição da Vaga <span class="required">*</span></label>
-                    <textarea id="descricao" placeholder="Descreva a vaga, responsabilidades e o que a empresa busca..."></textarea>
+                    <textarea id="descricao"
+                        placeholder="Descreva a vaga, responsabilidades e o que a empresa busca..."></textarea>
                     <span class="error-msg">Por favor, insira a descrição da vaga.</span>
                 </div>
 
@@ -1338,7 +1528,11 @@
 
                 <div class="form-group" id="group-obrigatorias">
                     <label>Habilidades Obrigatórias <span class="required">*</span></label>
-                    <span class="hint">Digite uma habilidade e pressione <kbd style="padding: 1px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.7rem;">Enter</kbd> ou <kbd style="padding: 1px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.7rem;">,</kbd> para adicionar</span>
+                    <span class="hint">Digite uma habilidade e pressione <kbd
+                            style="padding: 1px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.7rem;">Enter</kbd>
+                        ou <kbd
+                            style="padding: 1px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.7rem;">,</kbd>
+                        para adicionar</span>
                     <div class="tag-input-wrapper" id="tags-obrigatorias">
                         <input type="text" id="input-obrigatorias" placeholder="Ex: Python, SQL, Machine Learning...">
                     </div>
@@ -1356,37 +1550,35 @@
                 <!-- Actions -->
                 <div class="actions">
                     <button class="btn btn--secondary" id="btn-limpar" type="button">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" />
+                        </svg>
                         Limpar
                     </button>
                     <button class="btn btn--primary" id="btn-gerar" type="button">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-                        Gerar vaga_exemplo
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                        Salvar Vaga
                     </button>
                 </div>
 
-                <!-- Output -->
-                <div class="output-section" id="output-vaga" style="display: none;">
-                    <div class="output-header">
-                        <span class="output-header__title">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-                            vaga_exemplo
-                        </span>
-                        <div class="output-header__actions">
-                            <button class="output-header__copy" id="btn-copiar-vaga">📋 Copiar</button>
-                        </div>
-                    </div>
-                    <pre class="output-code" id="output-code-vaga"></pre>
-                    <div class="success-banner" id="success-banner-vaga">
-                        ✅ Objeto <strong>vaga_exemplo</strong> gerado com sucesso! Copie e cole no notebook.
-                    </div>
+                <!-- Success Message -->
+                <div class="success-banner" id="success-banner-vaga" style="margin-top: 24px;">
+                    ✅ <strong>Vaga salva com sucesso!</strong>
                 </div>
 
                 <!-- Navigate to Step 2 -->
                 <div class="nav-actions" id="nav-to-step2" style="display: none;">
                     <button class="btn btn--success" id="btn-next-step" type="button">
                         Próximo: Importar Currículos
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -1395,20 +1587,19 @@
             <!-- STEP 2 — Importar Currículos -->
             <!-- ============================================================ -->
             <div class="step-panel" id="step-2">
-                <!-- API Link -->
-                <div class="section-title">
-                    <span class="section-title__icon section-title__icon--api">🔗</span>
-                    Conexão com a API
+                <!-- API Link (oculto — edite o value abaixo para alterar o link) -->
+                <div style="display: none;">
+                    <div class="section-title">
+                        <span class="section-title__icon section-title__icon--api">🔗</span>
+                        Conexão com a API
+                    </div>
+                    <div class="form-group" id="group-api-link">
+                        <label for="linkApi">Link do Servidor (Ngrok) <span class="required">*</span></label>
+                        <input type="text" id="linkApi"
+                            value="https://lillianna-unhogged-nelida.ngrok-free.dev/parse_curriculo/">
+                    </div>
                 </div>
 
-                <div class="form-group" id="group-api-link">
-                    <label for="linkApi">Link do Servidor (Ngrok) <span class="required">*</span></label>
-                    <span class="hint">Cole o link gerado pelo Colab para processar os currículos via IA</span>
-                    <input type="text" id="linkApi" placeholder="https://seu-link.ngrok-free.dev/parse_curriculo/" value="https://lillianna-unhogged-nelida.ngrok-free.dev/parse_curriculo/">
-                    <span class="error-msg">Por favor, insira o link da API.</span>
-                </div>
-
-                <div class="divider"></div>
 
                 <!-- File Upload -->
                 <div class="section-title">
@@ -1445,31 +1636,38 @@
                 <!-- Actions -->
                 <div class="actions">
                     <button class="btn btn--secondary" id="btn-voltar" type="button">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
                         Voltar
                     </button>
                     <button class="btn btn--primary" id="btn-enviar" type="button">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                        Enviar para o Colab
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="12" y1="18" x2="12" y2="12" />
+                            <line x1="9" y1="15" x2="15" y2="15" />
+                        </svg>
+                        Salvar Currículos
                     </button>
                 </div>
 
-                <!-- Output -->
-                <div class="output-section" id="output-curriculos" style="display: none;">
-                    <div class="output-header">
-                        <span class="output-header__title">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            curriculos_extraidos.json
-                        </span>
-                        <div class="output-header__actions">
-                            <button class="output-header__copy" id="btn-copiar-curriculos">📋 Copiar</button>
-                            <button class="output-header__download" id="btn-baixar-curriculos">⬇ Baixar JSON</button>
-                        </div>
-                    </div>
-                    <pre class="output-code" id="output-code-curriculos"></pre>
-                    <div class="success-banner" id="success-banner-curriculos">
-                        ✅ Currículos processados com sucesso!
-                    </div>
+                <!-- Success Message -->
+                <div class="success-banner" id="success-banner-curriculos" style="margin-top: 24px;">
+                    ✅ <strong>Currículos salvos com sucesso!</strong>
+                </div>
+
+                <!-- Navigate to Step 3 -->
+                <div class="nav-actions" id="nav-to-step3" style="display: none;">
+                    <button class="btn btn--success" id="btn-next-step3" type="button">
+                        Próximo: Matching IA
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -1498,20 +1696,15 @@
                     </div>
                 </div>
 
-                <div class="divider"></div>
-
-                <!-- API Link -->
-                <div class="section-title">
-                    <span class="section-title__icon section-title__icon--api">🔗</span>
-                    Conexão com a API de Matching
+                <!-- API Link Matching (oculto — edite o value abaixo para alterar o link) -->
+                <div style="display: none;">
+                    <div class="form-group" id="group-api-matching">
+                        <label for="linkApiMatching">Link do Servidor de Matching (Ngrok)</label>
+                        <input type="text" id="linkApiMatching"
+                            value="https://trespass-barrette-shakily.ngrok-free.dev/match">
+                    </div>
                 </div>
 
-                <div class="form-group" id="group-api-matching">
-                    <label for="linkApiMatching">Link do Servidor de Matching (Ngrok) <span class="required">*</span></label>
-                    <span class="hint">Cole o link gerado pelo Colab 2 (Sistema de Currículo) para executar o matching semântico</span>
-                    <input type="text" id="linkApiMatching" placeholder="https://seu-link.ngrok-free.dev/match" value="https://trespass-barrette-shakily.ngrok-free.dev/match">
-                    <span class="error-msg">Por favor, insira o link da API de matching.</span>
-                </div>
 
                 <!-- Progress -->
                 <div class="progress-container" id="match-progress-container">
@@ -1527,11 +1720,18 @@
                 <!-- Actions -->
                 <div class="actions">
                     <button class="btn btn--secondary" id="btn-voltar-step3" type="button">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
                         Voltar
                     </button>
                     <button class="btn btn--primary" id="btn-executar-match" type="button">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        </svg>
                         Executar Matching Semântico
                     </button>
                 </div>
@@ -1573,61 +1773,54 @@
         };
 
         // ===================== DOM REFS — STEP 1 =====================
-        const tituloInput     = document.getElementById('titulo');
-        const descricaoInput  = document.getElementById('descricao');
-        const nivelSelect     = document.getElementById('nivel');
-        const inputObrig      = document.getElementById('input-obrigatorias');
-        const inputDesej      = document.getElementById('input-desejaveis');
-        const tagsObrig       = document.getElementById('tags-obrigatorias');
-        const tagsDesej       = document.getElementById('tags-desejaveis');
-        const btnGerar        = document.getElementById('btn-gerar');
-        const btnLimpar       = document.getElementById('btn-limpar');
-        const btnCopiarVaga   = document.getElementById('btn-copiar-vaga');
-        const outputVaga      = document.getElementById('output-vaga');
-        const outputCodeVaga  = document.getElementById('output-code-vaga');
-        const successBannerV  = document.getElementById('success-banner-vaga');
-        const navToStep2      = document.getElementById('nav-to-step2');
-        const btnNextStep     = document.getElementById('btn-next-step');
+        const tituloInput = document.getElementById('titulo');
+        const descricaoInput = document.getElementById('descricao');
+        const nivelSelect = document.getElementById('nivel');
+        const inputObrig = document.getElementById('input-obrigatorias');
+        const inputDesej = document.getElementById('input-desejaveis');
+        const tagsObrig = document.getElementById('tags-obrigatorias');
+        const tagsDesej = document.getElementById('tags-desejaveis');
+        const btnGerar = document.getElementById('btn-gerar');
+        const btnLimpar = document.getElementById('btn-limpar');
+        const successBannerV = document.getElementById('success-banner-vaga');
+        const navToStep2 = document.getElementById('nav-to-step2');
+        const btnNextStep = document.getElementById('btn-next-step');
 
         // ===================== DOM REFS — STEP 2 =====================
-        const linkApiInput          = document.getElementById('linkApi');
-        const fileInput             = document.getElementById('arquivoPdf');
-        const fileUploadZone        = document.getElementById('file-upload-zone');
-        const fileListEl            = document.getElementById('file-list');
-        const btnEnviar             = document.getElementById('btn-enviar');
-        const btnVoltar             = document.getElementById('btn-voltar');
-        const progressContainer     = document.getElementById('progress-container');
-        const progressBar           = document.getElementById('progress-bar');
-        const progressText          = document.getElementById('progress-text');
-        const logList               = document.getElementById('log-list');
-        const outputCurriculos      = document.getElementById('output-curriculos');
-        const outputCodeCurriculos  = document.getElementById('output-code-curriculos');
-        const successBannerC        = document.getElementById('success-banner-curriculos');
-        const btnCopiarCurriculos   = document.getElementById('btn-copiar-curriculos');
-        const btnBaixarCurriculos   = document.getElementById('btn-baixar-curriculos');
+        const linkApiInput = document.getElementById('linkApi');
+        const fileInput = document.getElementById('arquivoPdf');
+        const fileUploadZone = document.getElementById('file-upload-zone');
+        const fileListEl = document.getElementById('file-list');
+        const btnEnviar = document.getElementById('btn-enviar');
+        const btnVoltar = document.getElementById('btn-voltar');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const logList = document.getElementById('log-list');
+        const successBannerC = document.getElementById('success-banner-curriculos');
 
         // ===================== DOM REFS — STEPPER =====================
-        const stepIndicator1    = document.getElementById('step-indicator-1');
-        const stepIndicator2    = document.getElementById('step-indicator-2');
-        const stepIndicator3    = document.getElementById('step-indicator-3');
+        const stepIndicator1 = document.getElementById('step-indicator-1');
+        const stepIndicator2 = document.getElementById('step-indicator-2');
+        const stepIndicator3 = document.getElementById('step-indicator-3');
         const stepperConnector1 = document.getElementById('stepper-connector-1');
         const stepperConnector2 = document.getElementById('stepper-connector-2');
-        const stepPanel1        = document.getElementById('step-1');
-        const stepPanel2        = document.getElementById('step-2');
-        const stepPanel3        = document.getElementById('step-3');
+        const stepPanel1 = document.getElementById('step-1');
+        const stepPanel2 = document.getElementById('step-2');
+        const stepPanel3 = document.getElementById('step-3');
 
         // ===================== DOM REFS — STEP 3 =====================
-        const linkApiMatching       = document.getElementById('linkApiMatching');
-        const btnVoltarStep3        = document.getElementById('btn-voltar-step3');
-        const btnExecutarMatch      = document.getElementById('btn-executar-match');
+        const linkApiMatching = document.getElementById('linkApiMatching');
+        const btnVoltarStep3 = document.getElementById('btn-voltar-step3');
+        const btnExecutarMatch = document.getElementById('btn-executar-match');
         const matchProgressContainer = document.getElementById('match-progress-container');
-        const matchProgressBar      = document.getElementById('match-progress-bar');
-        const matchProgressText     = document.getElementById('match-progress-text');
-        const matchResults          = document.getElementById('match-results');
-        const rankingContainer      = document.getElementById('ranking-container');
-        const summaryVagaTitle      = document.getElementById('summary-vaga-title');
-        const summaryCvCount        = document.getElementById('summary-cv-count');
-        const summaryNivel          = document.getElementById('summary-nivel');
+        const matchProgressBar = document.getElementById('match-progress-bar');
+        const matchProgressText = document.getElementById('match-progress-text');
+        const matchResults = document.getElementById('match-results');
+        const rankingContainer = document.getElementById('ranking-container');
+        const summaryVagaTitle = document.getElementById('summary-vaga-title');
+        const summaryCvCount = document.getElementById('summary-cv-count');
+        const summaryNivel = document.getElementById('summary-nivel');
 
         // ===================== STEPPER NAVIGATION =====================
         function goToStep(n) {
@@ -1691,10 +1884,10 @@
         }
 
         function renderTags(type) {
-            const list      = type === 'obrig' ? state.obrigatorias : state.desejaveis;
+            const list = type === 'obrig' ? state.obrigatorias : state.desejaveis;
             const container = type === 'obrig' ? tagsObrig : tagsDesej;
-            const input     = type === 'obrig' ? inputObrig : inputDesej;
-            const cssClass  = type === 'obrig' ? 'tag--obrig' : 'tag--desej';
+            const input = type === 'obrig' ? inputObrig : inputDesej;
+            const cssClass = type === 'obrig' ? 'tag--obrig' : 'tag--desej';
 
             // Remove existing tags
             container.querySelectorAll('.tag').forEach(el => el.remove());
@@ -1807,50 +2000,15 @@
             // Guardar a vaga no estado (para usar no Step 3)
             state.vaga = vaga;
 
-            const pythonStr = formatAsPython(vaga);
-
-            outputCodeVaga.textContent = pythonStr;
-            outputVaga.style.display = 'block';
             successBannerV.classList.add('visible');
             navToStep2.style.display = 'flex';
 
-            // Smooth scroll to output
+            // Smooth scroll to success message
             setTimeout(() => {
-                outputVaga.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                successBannerV.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 100);
         });
 
-        function formatAsPython(vaga) {
-            const indent = '    ';
-            let out = 'vaga_exemplo = {\n';
-            out += `${indent}'titulo': '${escapePy(vaga.titulo)}',\n`;
-            out += `${indent}'descricao': """${escapePy(vaga.descricao)}""",\n`;
-            out += `${indent}'habilidades_obrigatorias': [\n`;
-            vaga.habilidades_obrigatorias.forEach((h, i) => {
-                const comma = i < vaga.habilidades_obrigatorias.length - 1 ? ',' : '';
-                out += `${indent}${indent}'${escapePy(h)}'${comma}\n`;
-            });
-            out += `${indent}],\n`;
-            out += `${indent}'habilidades_desejaveis': [\n`;
-            vaga.habilidades_desejaveis.forEach((h, i) => {
-                const comma = i < vaga.habilidades_desejaveis.length - 1 ? ',' : '';
-                out += `${indent}${indent}'${escapePy(h)}'${comma}\n`;
-            });
-            out += `${indent}],\n`;
-            out += `${indent}'area_desejada': '${escapePy(vaga.area_desejada)}',\n`;
-            out += `${indent}'nivel_desejado': '${escapePy(vaga.nivel_desejado)}'\n`;
-            out += '}';
-            return out;
-        }
-
-        function escapePy(s) {
-            return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        }
-
-        // ===================== COPY VAGA =====================
-        btnCopiarVaga.addEventListener('click', () => {
-            copyToClipboard(outputCodeVaga.textContent, btnCopiarVaga);
-        });
 
         // ===================== CLEAR STEP 1 =====================
         btnLimpar.addEventListener('click', () => {
@@ -1861,7 +2019,6 @@
             state.desejaveis = [];
             renderTags('obrig');
             renderTags('desej');
-            outputVaga.style.display = 'none';
             navToStep2.style.display = 'none';
             successBannerV.classList.remove('visible');
             ['group-titulo', 'group-descricao', 'group-nivel', 'group-obrigatorias'].forEach(clearValidation);
@@ -1964,7 +2121,6 @@
             progressContainer.classList.add('visible');
             logList.innerHTML = '';
             progressBar.style.width = '0%';
-            outputCurriculos.style.display = 'none';
             successBannerC.classList.remove('visible');
             btnEnviar.disabled = true;
             btnVoltar.disabled = true;
@@ -2012,18 +2168,17 @@
 
             if (jsonsExtraidos.length > 0) {
                 state.curriculos = jsonsExtraidos;
-                outputCodeCurriculos.textContent = JSON.stringify(jsonsExtraidos, null, 2);
-                outputCurriculos.style.display = 'block';
                 successBannerC.classList.add('visible');
-
-                // Mostrar botão para ir ao Step 3
-                navToStep3El.style.display = 'flex';
+                document.getElementById('nav-to-step3').style.display = 'flex';
 
                 setTimeout(() => {
-                    outputCurriculos.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    document.getElementById('nav-to-step3').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 100);
             }
         });
+
+        // Navigate to Step 3
+        document.getElementById('btn-next-step3').addEventListener('click', () => goToStep(3));
 
         function addLog(type, message) {
             const el = document.createElement('div');
@@ -2033,28 +2188,6 @@
             logList.scrollTop = logList.scrollHeight;
         }
 
-        // ===================== COPY CURRICULOS =====================
-        btnCopiarCurriculos.addEventListener('click', () => {
-            copyToClipboard(outputCodeCurriculos.textContent, btnCopiarCurriculos);
-        });
-
-        // ===================== DOWNLOAD JSON =====================
-        btnBaixarCurriculos.addEventListener('click', () => {
-            if (!state.curriculos.length) return;
-
-            const jsonString = JSON.stringify(state.curriculos, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'curriculos_extraidos.json';
-            document.body.appendChild(a);
-            a.click();
-
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
 
         // ===================== UTILS =====================
         function escapeHtml(str) {
@@ -2276,10 +2409,10 @@
             });
             // Wrap consecutive <tr> in <table>
             html = html.replace(/((<tr>.*<\/tr>\n?)+)/g, (match) => {
-                let tableHtml = match.replace('<!--sep-->', '');
-                // Convert first row to th
+                let tableHtml = match.replace('<!--sep-->', '').replace('<!--sep-->\n', '');
+                // Convert first row td to th (no thead wrapper)
                 tableHtml = tableHtml.replace(/<tr>(.*?)<\/tr>/, (m, inner) => {
-                    return '<thead><tr>' + inner.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>') + '</tr></thead>';
+                    return '<tr>' + inner.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>') + '</tr>';
                 });
                 return '<table>' + tableHtml + '</table>';
             });
@@ -2328,4 +2461,5 @@
         });
     </script>
 </body>
+
 </html>
