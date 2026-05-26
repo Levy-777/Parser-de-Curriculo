@@ -1355,12 +1355,19 @@
         }
 
         /* --- Table --- */
+        .gemini-analysis__content .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 18px 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+        }
+
         .gemini-analysis__content table {
             width: 100%;
+            min-width: 600px;
             border-collapse: collapse;
-            margin: 18px 0;
             font-size: 0.8rem;
-            border: 1px solid var(--border-subtle);
         }
 
         .gemini-analysis__content tr:first-child {
@@ -2400,23 +2407,45 @@
             // Horizontal rules
             html = html.replace(/^---$/gm, '<hr>');
 
-            // Tables
-            html = html.replace(/^\|(.+)\|$/gm, (match, content) => {
-                const cells = content.split('|').map(c => c.trim());
-                // Check if separator row
-                if (cells.every(c => /^[-:]+$/.test(c))) return '<!--sep-->';
-                return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
-            });
-            // Wrap consecutive <tr> in <table>
-            html = html.replace(/((<tr>.*<\/tr>\n?)+)/g, (match) => {
-                let tableHtml = match.replace('<!--sep-->', '').replace('<!--sep-->\n', '');
-                // Convert first row td to th (no thead wrapper)
-                tableHtml = tableHtml.replace(/<tr>(.*?)<\/tr>/, (m, inner) => {
-                    return '<tr>' + inner.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>') + '</tr>';
-                });
-                return '<table>' + tableHtml + '</table>';
-            });
-            html = html.replace(/<!--sep-->\n?/g, '');
+            // Tables — robust: gather consecutive pipe-rows, build in one pass
+            html = (() => {
+                const lines = html.split('\n');
+                const result = [];
+                let tableRows = [];
+
+                function flushTable() {
+                    if (tableRows.length === 0) return;
+                    // Filter out separator rows (all cells are dashes/colons)
+                    const dataRows = tableRows.filter(row => {
+                        return !row.every(c => /^[-:]+$/.test(c) || c === '');
+                    });
+                    if (dataRows.length === 0) { tableRows = []; return; }
+                    let tableHtml = '';
+                    dataRows.forEach((cells, i) => {
+                        const tag = i === 0 ? 'th' : 'td';
+                        tableHtml += '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>';
+                    });
+                    result.push('<div class="table-wrapper"><table>' + tableHtml + '</table></div>');
+                    tableRows = [];
+                }
+
+                for (const line of lines) {
+                    // Match lines that start with | (trailing | optional)
+                    const pipeMatch = line.match(/^\|(.+)/);
+                    if (pipeMatch) {
+                        let inner = pipeMatch[1];
+                        // Remove trailing | if present
+                        inner = inner.replace(/\|?\s*$/, '');
+                        const cells = inner.split('|').map(c => c.trim());
+                        tableRows.push(cells);
+                    } else {
+                        flushTable();
+                        result.push(line);
+                    }
+                }
+                flushTable();
+                return result.join('\n');
+            })();
 
             // Unordered lists
             html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
@@ -2431,8 +2460,8 @@
             html = html.replace(/<br><\/h/g, '</h');
             html = html.replace(/<br><ul>/g, '<ul>');
             html = html.replace(/<\/ul><br>/g, '</ul>');
-            html = html.replace(/<br><table>/g, '<table>');
-            html = html.replace(/<\/table><br>/g, '</table>');
+            html = html.replace(/<br><div class="table-wrapper">/g, '<div class="table-wrapper">');
+            html = html.replace(/<\/div><br>/g, '</div>');
             html = html.replace(/<br><hr>/g, '<hr>');
 
             return html;
