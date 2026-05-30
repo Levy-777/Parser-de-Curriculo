@@ -2,7 +2,7 @@
   <img src="https://img.shields.io/badge/Status-Propriet%C3%A1rio%20%7C%20Showcase-8b5cf6?style=for-the-badge" alt="Status do Projeto">
   <img src="https://img.shields.io/badge/AI-vLLM%20%7C%20Gemini%202.5-10b981?style=for-the-badge" alt="AI Stack">
   <br><br>
-  <h1>Recrutador AI: Motor de Matching Semântico Inclusivo</h1>
+  <h1>Recruta A.I: Motor de Matching Semântico Inclusivo</h1>
   <p><b>Um sistema ATS (Applicant Tracking System) de nova geração baseado em Modelos de Linguagem (LLMs) e Busca Vetorial.</b></p>
   <p><b>Acesse a Interface: <a href="https://levy-777.github.io/Parser-de-Curriculo/">https://levy-777.github.io/Parser-de-Curriculo/</a></b></p>
 </div>
